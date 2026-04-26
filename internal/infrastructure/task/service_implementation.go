@@ -20,7 +20,7 @@ func NewTaskService(repo *json.TaskRepository) *TaskService {
 // // ---------------- Add Task ----------------
 
 func (s *TaskService) AddTask(ctx context.Context, input dto.AddTaskInput) error {
-	task, err := domain.NewTask(strconv.Itoa(generateID()), input.Description, "")
+	task, err := domain.NewTask(strconv.Itoa(generateID()), input.Description)
 	if err != nil {
 		return err
 	}
@@ -40,9 +40,9 @@ func (s *TaskService) ListTasks(ctx context.Context) ([]*dto.TaskDTO, error) {
 
 	for _, t := range tasks {
 		result = append(result, &dto.TaskDTO{
-			ID:          t.ID(),
-			Description: t.Description(),
-			Status:      string(t.Status()),
+			ID:          t.ID,
+			Description: t.Description,
+			Status:      string(t.Status),
 		})
 	}
 
@@ -95,9 +95,9 @@ func (s *TaskService) GetTasksByStatus(ctx context.Context, status string) ([]*d
 
 	for _, t := range tasks {
 		result = append(result, &dto.TaskDTO{
-			ID:          t.ID(),
-			Description: t.Description(),
-			Status:      string(t.Status()),
+			ID:          t.ID,
+			Description: t.Description,
+			Status:      string(t.Status),
 		})
 	}
 
@@ -113,9 +113,9 @@ func (s *TaskService) GetTasksById(ctx context.Context, id string) (*dto.TaskDTO
 	}
 
 	return &dto.TaskDTO{
-		ID:          task.ID(),
-		Description: task.Description(),
-		Status:      string(task.Status()),
+		ID:          task.ID,
+		Description: task.Description,
+		Status:      string(task.Status),
 	}, nil
 }
 
@@ -128,6 +128,19 @@ func (s *TaskService) MarkDone(ctx context.Context, id string) error {
 	}
 
 	task.MarkDone()
+
+	return s.repo.Update(ctx, task)
+}
+
+// ---------------- Mark Progess ----------------
+
+func (s *TaskService) MarkProgress(ctx context.Context, id string) error {
+	task, err := s.repo.GetByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	task.MarkInProgress()
 
 	return s.repo.Update(ctx, task)
 }

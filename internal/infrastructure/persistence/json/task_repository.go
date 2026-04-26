@@ -80,7 +80,7 @@ func (r *TaskRepository) Update(ctx context.Context, updated *task.Task) error {
 	found := false
 
 	for i, t := range tasks {
-		if t.ID() == updated.ID() {
+		if t.ID == updated.ID {
 			tasks[i] = updated
 			found = true
 			break
@@ -108,7 +108,7 @@ func (r *TaskRepository) Delete(ctx context.Context, id string) error {
 	found := false
 
 	for _, t := range tasks {
-		if t.ID() == id {
+		if t.ID == id {
 			found = true
 			continue
 		}
@@ -141,7 +141,7 @@ func (r *TaskRepository) GetByStatus(ctx context.Context, status string) ([]*tas
 	var result []*task.Task
 
 	for _, t := range tasks {
-		if string(t.Status()) == status {
+		if string(t.Status) == status {
 			result = append(result, t)
 		}
 	}
@@ -159,7 +159,7 @@ func (r *TaskRepository) GetByID(ctx context.Context, id string) (*task.Task, er
 	}
 
 	for _, t := range tasks {
-		if t.ID() == id {
+		if t.ID == id {
 			return t, nil
 		}
 	}

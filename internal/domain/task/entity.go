@@ -1,84 +1,71 @@
 package task
 
-import "time"
+import (
+	"time"
+)
 
 type Status string
 
+const (
+	StatusTodo       Status = "mark-todo"
+	StatusInProgress Status = "mark-in-progress"
+	StatusDone       Status = "mark-done"
+)
+
 type Task struct {
-	id          string
-	description string
-	status      Status
-	createdAt   time.Time
-	updatedAt   time.Time
+	ID          string    `json:"id"`
+	Description string    `json:"description"`
+	Status      Status    `json:"status"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }
 
-func NewTask(
-	id,
-	description string,
-	status Status,
-) (*Task, error) {
+func NewTask(id, description string) (*Task, error) {
 	if description == "" {
 		return nil, ErrInvalidDescription
-	}
-
-	if status == "" { // zero value → default
-		status = StatusInProgress
 	}
 
 	now := time.Now()
 
 	return &Task{
-		id:          id,
-		description: description,
-		status:      status,
-		createdAt:   now,
-		updatedAt:   now,
+		ID:          id,
+		Description: description,
+		Status:      StatusTodo,
+		CreatedAt:   now,
+		UpdatedAt:   now,
 	}, nil
 }
 
-const (
-	StatusTodo       Status = "todo"
-	StatusInProgress Status = "in-progress"
-	StatusDone       Status = "done"
-)
-
-func (t *Task) ID() string {
-	return t.id
-}
-
-func (t *Task) Description() string {
-	return t.description
-}
-
-func (t *Task) Status() Status {
-	return t.status
-}
-
 func (t *Task) MarkDone() {
-	t.status = StatusDone
-	t.updatedAt = time.Now()
+	t.Status = StatusDone
+	t.UpdatedAt = time.Now()
+}
+
+func (t *Task) MarkProgess() {
+	t.Status = StatusInProgress
+	t.UpdatedAt = time.Now()
 }
 
 func (t *Task) MarkInProgress() {
-	t.status = StatusInProgress
-	t.updatedAt = time.Now()
+	t.Status = StatusInProgress
+	t.UpdatedAt = time.Now()
 }
 
 func (t *Task) UpdateDescription(desc string) error {
 	if desc == "" {
 		return ErrInvalidDescription
 	}
-	t.description = desc
-	t.updatedAt = time.Now()
+	t.Description = desc
+	t.UpdatedAt = time.Now()
 	return nil
 }
 
 func (t *Task) UpdateStatus(status Status) error {
-	if status.IsValid() {
+	if !status.IsValid() {
 		return ErrInvalidStatus
 	}
-	t.status = status
-	t.updatedAt = time.Now()
+	t.Status = status
+	t.UpdatedAt = time.Now()
 	return nil
 }
 
