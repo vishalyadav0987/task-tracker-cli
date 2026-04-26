@@ -20,6 +20,11 @@ func NewTask(
 	if description == "" {
 		return nil, ErrInvalidDescription
 	}
+
+	if status == "" { // zero value → default
+		status = StatusInProgress
+	}
+
 	now := time.Now()
 
 	return &Task{
@@ -66,4 +71,22 @@ func (t *Task) UpdateDescription(desc string) error {
 	t.description = desc
 	t.updatedAt = time.Now()
 	return nil
+}
+
+func (t *Task) UpdateStatus(status Status) error {
+	if status.IsValid() {
+		return ErrInvalidStatus
+	}
+	t.status = status
+	t.updatedAt = time.Now()
+	return nil
+}
+
+func (s Status) IsValid() bool {
+	switch s {
+	case StatusTodo, StatusInProgress, StatusDone:
+		return true
+	default:
+		return false
+	}
 }

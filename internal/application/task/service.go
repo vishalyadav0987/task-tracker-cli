@@ -13,4 +13,5 @@ type TaskService interface {
 	MarkDone(ctx context.Context, id string) error
 	UpdateTask(ctx context.Context, input dto.UpdateTaskInput) error
 	GetTasksByStatus(ctx context.Context, status string) ([]*dto.TaskDTO, error)
+	GetTasksById(ctx context.Context, id string) ([]*dto.TaskDTO, error)
 }
