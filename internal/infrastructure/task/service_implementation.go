@@ -2,8 +2,8 @@ package task
 
 import (
 	"context"
-	"strconv"
 
+	"github.com/google/uuid"
 	"github.com/vishalyadav0987/task-tracker-cli/internal/application/task/dto"
 	domain "github.com/vishalyadav0987/task-tracker-cli/internal/domain/task"
 	"github.com/vishalyadav0987/task-tracker-cli/internal/infrastructure/persistence/json"
@@ -20,7 +20,7 @@ func NewTaskService(repo *json.TaskRepository) *TaskService {
 // // ---------------- Add Task ----------------
 
 func (s *TaskService) AddTask(ctx context.Context, input dto.AddTaskInput) error {
-	task, err := domain.NewTask(strconv.Itoa(generateID()), input.Description)
+	task, err := domain.NewTask(generateID(), input.Description)
 	if err != nil {
 		return err
 	}
@@ -147,9 +147,6 @@ func (s *TaskService) MarkProgress(ctx context.Context, id string) error {
 
 // ---------------- helper ----------------
 
-var currentID int = 0
-
-func generateID() int {
-	currentID++
-	return currentID
+func generateID() string {
+	return uuid.New().String()
 }

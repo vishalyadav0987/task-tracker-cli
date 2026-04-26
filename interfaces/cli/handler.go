@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/fatih/color"
+	"github.com/olekukonko/tablewriter"
 	"github.com/vishalyadav0987/task-tracker-cli/internal/application/task/dto"
 	app "github.com/vishalyadav0987/task-tracker-cli/internal/infrastructure/task"
 )
@@ -15,6 +17,36 @@ type Handler struct {
 
 func NewHandler(service *app.TaskService) *Handler {
 	return &Handler{service: service}
+}
+
+func RenderTasks(tasks []*dto.TaskDTO) {
+	table := tablewriter.NewWriter(os.Stdout)
+
+	table.Header([]string{"ID", "Description", "Status"})
+
+	for _, t := range tasks {
+
+		var status string
+
+		switch t.Status {
+		case "done":
+			status = color.New(color.FgGreen).Sprint("✔ Done")
+		case "in-progress":
+			status = color.New(color.FgYellow).Sprint("⏳ In Progress")
+		case "todo":
+			status = color.New(color.FgBlue).Sprint("📌 Todo")
+		default:
+			status = t.Status
+		}
+
+		table.Append([]string{
+			t.ID,
+			t.Description,
+			status,
+		})
+	}
+
+	table.Render()
 }
 
 func (h *Handler) Run() {
@@ -30,7 +62,7 @@ func (h *Handler) Run() {
 
 	case "add":
 		if len(cmd.Args) < 1 {
-			fmt.Println("Usage: task add \"description\"")
+			PrintInfo("Usage: task add \"description\"")
 			return
 		}
 
@@ -40,31 +72,33 @@ func (h *Handler) Run() {
 
 		err := h.service.AddTask(ctx, input)
 		if err != nil {
-			fmt.Println("Error:", err)
+			PrintError(err)
 			return
 		}
 
-		fmt.Println("Task added successfully")
+		PrintSuccess("Task added successfully")
 
 	case "list":
 		tasks, err := h.service.ListTasks(ctx)
 		if err != nil {
-			fmt.Println("Error:", err)
+			PrintError(err)
 			return
 		}
 
 		if len(tasks) == 0 {
-			fmt.Println("No tasks found")
+			PrintWarning("No tasks found")
 			return
 		}
 
-		for _, t := range tasks {
-			fmt.Printf("ID: %s | %s | %s\n", t.ID, t.Description, t.Status)
-		}
+		// for _, t := range tasks {
+		// 	fmt.Printf("ID: %s | %s | %s\n", t.ID, t.Description, t.Status)
+		// }
+
+		RenderTasks(tasks)
 
 	case "update":
 		if len(cmd.Args) < 2 {
-			fmt.Println("Usage: task update <id> \"new description\"")
+			PrintInfo("Usage: task update <id> \"new description\"")
 			return
 		}
 
@@ -77,57 +111,57 @@ func (h *Handler) Run() {
 
 		err := h.service.UpdateTask(ctx, input)
 		if err != nil {
-			fmt.Println("Error:", err)
+			PrintError(err)
 			return
 		}
 
-		fmt.Println("Task updated successfully")
+		PrintSuccess("Task updated successfully")
 
 	case "delete":
 		if len(cmd.Args) < 1 {
-			fmt.Println("Usage: task delete <id>")
+			PrintInfo("Usage: task delete <id>")
 			return
 		}
 
 		err := h.service.DeleteTask(ctx, cmd.Args[0])
 		if err != nil {
-			fmt.Println("Error:", err)
+			PrintError(err)
 			return
 		}
 
-		fmt.Println("Task deleted")
+		PrintSuccess("Task deleted")
 
 	case "mark-in-progress":
 		if len(cmd.Args) < 1 {
-			fmt.Println("Usage: task in-progress <id>")
+			PrintInfo("Usage: task in-progress <id>")
 			return
 		}
 
 		err := h.service.MarkProgress(ctx, cmd.Args[0])
 		if err != nil {
-			fmt.Println("Error:", err)
+			PrintError(err)
 			return
 		}
 
-		fmt.Println("Task marked as in-progress")
+		PrintSuccess("Task marked as in-progress")
 
 	case "mark-done":
 		if len(cmd.Args) < 1 {
-			fmt.Println("Usage: task done <id>")
+			PrintInfo("Usage: task done <id>")
 			return
 		}
 
 		err := h.service.MarkDone(ctx, cmd.Args[0])
 		if err != nil {
-			fmt.Println("Error:", err)
+			PrintError(err)
 			return
 		}
 
-		fmt.Println("Task marked as done")
+		PrintSuccess("Task marked as done")
 
 	case "status":
 		if len(cmd.Args) < 1 {
-			fmt.Println("Usage: task status <todo|in-progress|done>")
+			PrintInfo("Usage: task status <todo|in-progress|done>")
 			return
 		}
 
@@ -143,28 +177,33 @@ func (h *Handler) Run() {
 
 		tasks, err := h.service.GetTasksByStatus(ctx, status)
 		if err != nil {
-			fmt.Println("Error:", err)
+			PrintError(err)
 			return
 		}
 
-		for _, t := range tasks {
-			fmt.Printf("ID: %s | %s | %s\n", t.ID, t.Description, t.Status)
-		}
+		// for _, t := range tasks {
+		// 	fmt.Printf("ID: %s | %s | %s\n", t.ID, t.Description, t.Status)
+		// }
+		RenderTasks(tasks)
+
 	case "task":
 		if len(cmd.Args) < 1 {
-			fmt.Println("Usage: task get by Id <id>")
+			PrintInfo("Usage: task get by Id <id>")
 			return
 		}
 
 		task, err := h.service.GetTasksById(ctx, cmd.Args[0])
 		if err != nil {
-			fmt.Println("Error:", err)
+			PrintError(err)
 			return
 		}
 
-		fmt.Printf("ID: %s | %s | %s\n", task.ID, task.Description, task.Status)
+		// fmt.Printf("ID: %s | %s | %s\n", task.ID, task.Description, task.Status)
+		RenderTasks([]*dto.TaskDTO{
+			task,
+		})
 
 	default:
-		fmt.Println("Unknown command")
+		PrintWarning("Unknown command")
 	}
 }

@@ -1,6 +1,7 @@
 package task
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -26,6 +27,7 @@ func NewTask(id, description string) (*Task, error) {
 	}
 
 	now := time.Now()
+	fmt.Println("Generated ID:", id)
 
 	return &Task{
 		ID:          id,
