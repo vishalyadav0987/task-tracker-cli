@@ -2,7 +2,7 @@
 # 🧠 Task Tracker CLI (Golang)
 
 🔗 **Project URL:**  
-https://github.com/vishalyadav0987/task-tracker-cli
+https://roadmap.sh/projects/task-tracker
 
 ---
 
