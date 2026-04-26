@@ -1,6 +1,11 @@
 
 # 🧠 Task Tracker CLI (Golang)
 
+🔗 **Project URL:**  
+https://github.com/vishalyadav0987/task-tracker-cli
+
+---
+
 A simple yet powerful **Command Line Interface (CLI)** application built in **Go (Golang)** to manage your daily tasks efficiently.
 
 ---
