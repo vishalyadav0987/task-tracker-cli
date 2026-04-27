@@ -29,25 +29,41 @@ A simple yet powerful **Command Line Interface (CLI)** application built in **Go
 ## 📁 Project Structure
 
 ```
+task-tracker-cli
+├─ README.md
+├─ cmd
+│  └─ task-tracker
+│     └─ main.go
+├─ go.mod
+├─ go.sum
+├─ interfaces
+│  └─ cli
+│     ├─ handler.go
+│     ├─ output.go
+│     └─ parser.go
+└─ internal
+   ├─ application
+   │  └─ task
+   │     ├─ dto
+   │     │  ├─ input.go
+   │     │  └─ output.go
+   │     └─ service.go
+   ├─ config
+   │  └─ config.go
+   ├─ domain
+   │  └─ task
+   │     ├─ entity.go
+   │     ├─ errors.go
+   │     └─ repository.go
+   └─ infrastructure
+      ├─ persistence
+      │  └─ json
+      │     ├─ store.json
+      │     └─ task_repository.go
+      └─ task
+         └─ service_implementation.go
 
-task-tracker/
-│
-├── cmd/
-│   └── task-tracker/
-│       └── main.go
-│
-├── internal/
-│   ├── domain/
-│   ├── application/
-│   ├── infrastructure/
-│   └── interfaces/
-│
-├── data/
-│   └── tasks.json
-│
-└── README.md
-
-````
+```
 
 ---
 
@@ -181,4 +197,3 @@ task-cli task <task_id>
 ## ⭐ If you like this project
 
 Give it a ⭐ on GitHub!
-

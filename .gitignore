@@ -1,0 +1,40 @@
+# Binaries
+task-cli
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Build output
+/bin/
+/dist/
+/build/
+
+# Go build cache
+*.test
+*.out
+*.cover
+
+# Dependency directories
+/vendor/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment files
+.env
+
+# Data files (optional - if you don't want to commit tasks)
+./internal/infrastructure/persistence/json/store.json
+https://roadmap.sh/projects/task-tracker/solutions?u=69e11c4635198b31d63d8f6d
